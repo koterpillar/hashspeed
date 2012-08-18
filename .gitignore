@@ -1,1 +1,4 @@
 cpp/run
+*.o
+*.hi
+haskell/run
