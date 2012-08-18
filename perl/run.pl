@@ -27,6 +27,30 @@ sub generate {
     }
 }
 
+sub count {
+    my ($tree) = @_;
+
+    my $result = {
+        map { ($_ => 0) }
+        @items
+    };
+    count_accum($tree, $result);
+    return $result;
+}
+
+sub count_accum {
+    my ($tree, $accum) = @_;
+
+    if (!ref($tree)) {
+        $accum->{$tree}++;
+    } else {
+        while (my ($k, $v) = each %{$tree}) {
+            $accum->{$k}++;
+            count_accum($v, $accum);
+        }
+    }
+}
+
 my $tree = generate($ARGV[0]);
-
-
+my $counts = count($tree);
+print Dumper($counts);
