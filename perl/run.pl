@@ -61,7 +61,7 @@ sub count_accum {
 
 my $depth = $ARGV[0];
 
-my $tree = generate($ARGV[0]);
+my $tree = generate($depth);
 
 if ($depth < 4) {
     print Dumper($tree);
