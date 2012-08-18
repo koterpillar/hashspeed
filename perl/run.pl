@@ -3,13 +3,20 @@
 use POSIX;
 use Data::Dumper;
 
+my $rnd_state = 1;
+
+sub myrandom {
+    $rnd_state = ($rnd_state * 1103515245 + 12345) & 0x7FFFFFFF;
+    return $rnd_state;
+}
+
 my @items = ('a'..'z');
 sub item {
-    return $items[floor(rand() * @items)];
+    return $items[myrandom() % @items];
 }
 
 sub width {
-    return floor(rand() * 10);
+    return myrandom() % 9 + 1;
 }
 
 sub generate {
@@ -21,7 +28,8 @@ sub generate {
         my $result = {};
         my $width = width();
         for (my $i = 0; $i < $width; $i++) {
-            $result->{item()} = generate($depth - 1);
+            my $it = item();
+            $result->{$it} = generate($depth - 1);
         }
         return $result;
     }
@@ -51,6 +59,13 @@ sub count_accum {
     }
 }
 
+my $depth = $ARGV[0];
+
 my $tree = generate($ARGV[0]);
+
+if ($depth < 4) {
+    print Dumper($tree);
+}
+
 my $counts = count($tree);
 print Dumper($counts);
