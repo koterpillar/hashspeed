@@ -1,25 +1,32 @@
 #!/usr/bin/env python
 
 from pprint import pprint
-from random import random
 import string
 import sys
 
 items = string.lowercase
 
+rnd_state = 1
+
+def myrandom():
+    global rnd_state
+    rnd_state = (rnd_state * 1103515245 + 12345) & 0x7FFFFFFF
+    return rnd_state
+
 def item():
-    return items[int(random() * len(items))]
+    return items[myrandom() % len(items)]
 
 def width():
-    return int(random() * 10)
+    return myrandom() % 9 + 1
 
 def generate(depth):
     if depth == 0:
         return item()
     else:
         result = {}
-        for i in range(1, width()):
-            result[item()] = generate(depth - 1)
+        for i in range(0, width()):
+            it = item()
+            result[it] = generate(depth - 1)
         return result
 
 def count(tree):
@@ -34,6 +41,9 @@ def count(tree):
     count_accum(tree)
     return accum
 
-tree = generate(int(sys.argv[1]))
+depth = int(sys.argv[1])
+tree = generate(depth)
+if depth < 4:
+    pprint(tree)
 counts = count(tree)
 pprint(counts)
