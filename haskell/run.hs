@@ -56,20 +56,32 @@ generate depth =
         items <- mapM genItem [1..twidth]
         return $ Node $ M.fromList items
 
+incChar :: Char -> State (M.Map Char Int) ()
+incChar c = modify $ M.insertWith (+) c 1
+
 countAccum :: Tree -> State (M.Map Char Int) ()
-countAccum (Leaf c) = modify $ M.insertWith (+) c 1
-countAccum (Node n) = undefined
+countAccum (Leaf c) = incChar c
+countAccum (Node n) =
+    let countNode (k, v) = do
+        incChar k
+        countAccum v
+    in do
+        (flip mapM) (M.toList n) countNode
+        return ()
 
 count :: Tree -> M.Map Char Int
-count tree = execState (return $ countAccum tree) initState
-    where initState = M.fromList $ map (\i -> (i, 0)) items
+count tree =
+    let initState = M.fromList $ map (\i -> (i, 0)) items
+    in (flip execState) initState $ countAccum tree
 
 main :: IO ()
 main = do
     [depthStr] <- getArgs
     let depth = read depthStr :: Int
     let tree = evalState (generate depth) initialRandom
-    print tree
+    if depth < 4
+        then print tree
+        else return ()
     let counts = count tree
     print counts
     return ()
