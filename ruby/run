@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+require 'pp'
+
+@items = ('a'..'z').to_a
+
+@rnd_state = 1
+
+def myrandom
+    @rnd_state = (@rnd_state * 1103515245 + 12345) & 0x7FFFFFFF
+    return @rnd_state
+end
+
+def item
+    return @items[myrandom() % @items.size]
+end
+
+def width
+    return myrandom() % 9 + 1
+end
+
+def generate(depth)
+    if depth == 0
+        return item()
+    else
+        result = {}
+        (0...width()).each do
+            it = item()
+            result[it] = generate(depth - 1)
+        end
+        return result
+    end
+end
+
+def count_accum(accum, tree)
+    if tree.class == String
+        accum[tree] += 1
+    else
+        tree.each do |k, v|
+            accum[k] += 1
+            count_accum(accum, v)
+        end
+    end
+end
+
+def count(tree)
+    accum = Hash[@items.map { |x| [x, 0] }]
+    count_accum(accum, tree)
+    return accum
+end
+
+depth = ARGV[0].to_i
+tree = generate(depth)
+if depth < 4
+    pp(tree)
+end
+counts = count(tree)
+pp(counts)

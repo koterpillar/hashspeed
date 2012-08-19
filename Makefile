@@ -16,8 +16,8 @@ graph-time.svg: graph-time.txt
 graph-memory.svg: graph-memory.txt
 	./render graph-memory | gnuplot
 
-graph-time.txt: time_depth cpp/run haskell/run perl/run php/run python/run
+graph-time.txt: time_depth cpp/run haskell/run perl/run php/run python/run ruby/run
 	./time_depth time
 
-graph-memory.txt: time_depth cpp/run haskell/run perl/run php/run python/run
+graph-memory.txt: time_depth cpp/run haskell/run perl/run php/run python/run ruby/run
 	./time_depth memory
