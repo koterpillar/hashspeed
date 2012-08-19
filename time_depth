@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo -n "depth"
+for lang in `find * -type d`
+do
+    echo -ne "\t"
+    echo -n $lang
+done
+echo
+
+for depth in {1..9}
+do
+    echo -n $depth
+    for lang in $(find * -type d)
+    do
+        echo -ne "\t"
+        result=$(TIME=%e time $lang/run $depth 2>&1 >/dev/null)
+        if echo $result | grep -q 'Command exited'
+        then
+            echo -n '*'
+        else
+            echo -n $result
+        fi
+    done
+    echo
+done
