@@ -38,6 +38,29 @@ public class Run {
     private void count_accum(HashMap<Character, Integer> accum, Object tree) {
         if (tree instanceof Character) {
             accum.put((Character)tree, accum.get(tree) + 1);
+        } else {
+            HashMap<Character, Object> map = (HashMap<Character, Object>)tree;
+            for (Character c: map.keySet()) {
+                accum.put(c, accum.get(c) + 1);
+                count_accum(accum, map.get(c));
+            }
+        }
+    }
+
+    private void print(Object tree) {
+        print(tree, "");
+    }
+
+    private void print(Object tree, String prefix) {
+        if (tree instanceof Character) {
+            System.out.println(tree);
+        } else {
+            System.out.println();
+            HashMap<Character, Object> map = (HashMap<Character, Object>)tree;
+            for (Character c: map.keySet()) {
+                System.out.print(prefix + c + " -> ");
+                print(map.get(c), prefix + "\t");
+            }
         }
     }
 
@@ -53,10 +76,12 @@ public class Run {
     public void run(int depth) {
         Object tree = generate(depth);
         if (depth < 4) {
-            // nothing yet
+            print(tree);
         }
         HashMap<Character, Integer> counts = count(tree);
-        // nothing yet
+        for (char c: counts.keySet()) {
+            System.out.println("" + c + '\t' + counts.get(c));
+        }
     }
 
     public static void main(String[] arguments) {
