@@ -75,7 +75,7 @@ void count_accum(Tree tree, Counts* accum) {
 
 Counts* count(Tree tree) {
     Counts* result = new Counts();
-    for (char c = 'a'; c <= 'z'; c++) {
+    for (char c = MIN_ITEM; c <= MAX_ITEM; c++) {
         (*result)[c] = 0;
     }
     count_accum(tree, result);
