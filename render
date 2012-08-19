@@ -1,0 +1,15 @@
+#!/bin/bash
+
+infile=$1.txt
+
+echo -n "set terminal svg
+set output '$1.svg'
+set style data lines
+set log y
+plot "
+head -n 1 $infile | \
+    xargs -n 1 echo | \
+    awk 'BEGIN { ORS=","; x=2 } { if ($1 != "depth") { print "\"'$infile'\" using 1:" x " title \"" $1 "\""; x++; } }' | \
+    sed 's/,$//'
+echo
+

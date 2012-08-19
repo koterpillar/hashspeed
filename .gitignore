@@ -2,3 +2,5 @@ cpp/run
 *.o
 *.hi
 haskell/run
+graph-*.txt
+graph-*.svg

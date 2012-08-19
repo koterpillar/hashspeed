@@ -1,26 +1,43 @@
 #!/bin/bash
 
-echo -n "depth"
+type=$1
+
+case $type in
+    time)
+        arg=%e
+        ;;
+    memory)
+        arg=%M
+        ;;
+    *)
+        echo "Unknown type $type"
+        exit 1
+        ;;
+esac
+
+outfile=graph-$type.txt
+echo -n > $outfile
+echo -n "depth" >> $outfile
 for lang in `find * -type d`
 do
-    echo -ne "\t"
-    echo -n $lang
+    echo -ne "\t" >> $outfile
+    echo -n $lang >> $outfile
 done
-echo
+echo >> $outfile
 
 for depth in {1..9}
 do
-    echo -n $depth
+    echo -n $depth >> $outfile
     for lang in $(find * -type d)
     do
-        echo -ne "\t"
-        result=$(TIME=%e time $lang/run $depth 2>&1 >/dev/null)
+        echo -ne "\t" >> $outfile
+        result=$(TIME=$arg time $lang/run $depth 2>&1 >/dev/null)
         if echo $result | grep -q 'Command exited'
         then
-            echo -n '*'
+            echo -n '-' >> $outfile
         else
-            echo -n $result
+            echo -n $result >> $outfile
         fi
     done
-    echo
+    echo >> $outfile
 done
