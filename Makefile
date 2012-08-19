@@ -1,12 +1,15 @@
 all: exe graphs
 
-exe: cpp/run haskell/run
+exe: cpp/run haskell/run java/run
 
 cpp/run: cpp/run.cpp
 	g++ --std=c++11 -O3 cpp/run.cpp -o cpp/run
 
 haskell/run: haskell/run.hs
 	ghc -O2 -with-rtsopts="-K256M" haskell/run.hs
+
+java/run: java/Run.java
+	javac java/Run.java
 
 graphs: graph-time.svg graph-memory.svg
 
@@ -16,8 +19,8 @@ graph-time.svg: graph-time.txt
 graph-memory.svg: graph-memory.txt
 	./render graph-memory | gnuplot
 
-graph-time.txt: time_depth cpp/run haskell/run perl/run php/run python/run ruby/run
+graph-time.txt: time_depth cpp/run haskell/run java/run perl/run php/run python/run ruby/run
 	./time_depth time
 
-graph-memory.txt: time_depth cpp/run haskell/run perl/run php/run python/run ruby/run
+graph-memory.txt: time_depth cpp/run haskell/run java/run perl/run php/run python/run ruby/run
 	./time_depth memory
