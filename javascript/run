@@ -48,14 +48,14 @@ function count_accum(tree, accum) {
 
 function count(tree) {
     var result = {};
-    for (var c = MIN_ITEM; c <= MAX_ITEM; c++) {
-        result[c] = 0;
+    for (var c = MIN_ITEM.charCodeAt(0); c <= MAX_ITEM.charCodeAt(0); c++) {
+        result[String.fromCharCode(c)] = 0;
     }
     count_accum(tree, result);
     return result;
 }
 
-depth = process.argv[1];
+depth = process.argv[2];
 tree = generate(depth);
 if (depth < 4)
     console.log(tree);
