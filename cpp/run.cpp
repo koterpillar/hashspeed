@@ -34,7 +34,7 @@ typedef map<char, unsigned int> Counts;
 
 unsigned int rnd_state = 3;
 unsigned int myrandom() {
-    rnd_state = (rnd_state * rnd_state) % (11 * 19);
+    rnd_state = (rnd_state + 1) % 1001;
     return rnd_state;
 }
 

@@ -9,7 +9,7 @@ public class Run {
     private int rnd_state = 3;
 
     private int myrandom() {
-        rnd_state = (rnd_state * rnd_state) % (11 * 19);
+        rnd_state = (rnd_state + 1) % 1001;
         return rnd_state;
     }
 

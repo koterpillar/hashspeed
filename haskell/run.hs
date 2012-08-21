@@ -24,7 +24,7 @@ initialRandom = MyRandom 3
 myrandom :: State MyRandom Int
 myrandom = do
     (MyRandom rnd_state) <- get
-    let newstate = (rnd_state * rnd_state) `mod` (11 * 19)
+    let newstate = (rnd_state + 1) `mod` 1001
     put (MyRandom newstate)
     return newstate
 

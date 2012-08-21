@@ -10,7 +10,7 @@ rnd_state = 3
 
 def myrandom():
     global rnd_state
-    rnd_state = (rnd_state * rnd_state) % (11 * 19)
+    rnd_state = (rnd_state + 1) % 1001
     return rnd_state
 
 def item():
