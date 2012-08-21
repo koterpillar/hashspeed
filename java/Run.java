@@ -6,10 +6,10 @@ public class Run {
     private static char MIN_ITEM = 'a';
     private static char MAX_ITEM = 'z';
 
-    private int rnd_state = 1;
+    private int rnd_state = 3;
 
     private int myrandom() {
-        rnd_state = (rnd_state * 1103515245 + 12345) & 0x7FFFFFFF;
+        rnd_state = (rnd_state * rnd_state) % (11 * 19);
         return rnd_state;
     }
 

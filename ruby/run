@@ -4,10 +4,10 @@ require 'pp'
 
 @items = ('a'..'z').to_a
 
-@rnd_state = 1
+@rnd_state = 3
 
 def myrandom
-    @rnd_state = (@rnd_state * 1103515245 + 12345) & 0x7FFFFFFF
+    @rnd_state = (@rnd_state * @rnd_state) % (11 * 19)
     return @rnd_state
 end
 

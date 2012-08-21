@@ -32,9 +32,9 @@ struct TreeNode: public TreeItem {
 
 typedef map<char, unsigned int> Counts;
 
-unsigned int rnd_state = 1;
+unsigned int rnd_state = 3;
 unsigned int myrandom() {
-    rnd_state = (rnd_state * 1103515245 + 12345) & 0x7FFFFFFF;
+    rnd_state = (rnd_state * rnd_state) % (11 * 19);
     return rnd_state;
 }
 

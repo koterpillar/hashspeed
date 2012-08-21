@@ -1,6 +1,5 @@
 import Control.Monad.State
 
-import Data.Bits
 import qualified Data.Map as M
 
 import System.Environment
@@ -21,11 +20,11 @@ showTree (Node n) prefix = "\n" ++ (M.foldlWithKey' showNode "" n)
 
 data MyRandom = MyRandom Int
 initialRandom :: MyRandom
-initialRandom = MyRandom 1
+initialRandom = MyRandom 3
 myrandom :: State MyRandom Int
 myrandom = do
     (MyRandom rnd_state) <- get
-    let newstate = (rnd_state * 1103515245 + 12345) .&. 0x7FFFFFFF
+    let newstate = (rnd_state * rnd_state) `mod` (11 * 19)
     put (MyRandom newstate)
     return newstate
 
