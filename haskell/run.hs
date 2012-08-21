@@ -34,7 +34,7 @@ items = ['a'..'z']
 width :: State MyRandom Int
 width = do
     rnd <- myrandom
-    return $ rnd `mod` 9 + 1
+    return $ rnd `mod` 8 + 1
 
 item :: State MyRandom Char
 item = do

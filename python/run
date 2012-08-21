@@ -17,7 +17,7 @@ def item():
     return items[myrandom() % len(items)]
 
 def width():
-    return myrandom() % 9 + 1
+    return myrandom() % 8 + 1
 
 def generate(depth):
     if depth == 0:

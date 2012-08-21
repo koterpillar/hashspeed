@@ -16,7 +16,7 @@ sub item {
 }
 
 sub width {
-    return myrandom() % 9 + 1;
+    return myrandom() % 8 + 1;
 }
 
 sub generate {

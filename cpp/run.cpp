@@ -43,7 +43,7 @@ char item(void) {
 }
 
 unsigned int width(void) {
-    return myrandom() % 9 + 1;
+    return myrandom() % 8 + 1;
 }
 
 Tree generate(unsigned int depth) {

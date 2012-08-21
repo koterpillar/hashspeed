@@ -18,7 +18,7 @@ public class Run {
     }
 
     private int width() {
-        return myrandom() % 9 + 1;
+        return myrandom() % 8 + 1;
     }
 
     private Object generate(int depth) {

@@ -16,7 +16,7 @@ def item
 end
 
 def width
-    return myrandom() % 9 + 1
+    return myrandom() % 8 + 1
 end
 
 def generate(depth)

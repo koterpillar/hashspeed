@@ -25,7 +25,7 @@ do
 done
 echo >> $outfile
 
-for depth in {1..7}
+for depth in {1..10}
 do
     echo -n $depth >> $outfile
     for lang in $(find * -type d)
