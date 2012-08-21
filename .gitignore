@@ -1,6 +1,7 @@
 cpp/run
 *.o
 *.hi
+*.class
 haskell/run
 graph-*.txt
 graph-*.svg
