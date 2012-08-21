@@ -13,10 +13,10 @@ java/Run.class: java/Run.java
 
 graphs: graph-time.svg graph-memory.svg
 
-graph-time.svg: graph-time.txt
+graph-time.svg: graph-time.txt render
 	./render graph-time | gnuplot
 
-graph-memory.svg: graph-memory.txt
+graph-memory.svg: graph-memory.txt render
 	./render graph-memory | gnuplot
 
 graph-time.txt: time_depth cpp/run haskell/run java/Run.class javascript/run perl/run php/run python/run ruby/run

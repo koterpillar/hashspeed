@@ -4,7 +4,7 @@ infile=$1.txt
 
 echo -n "set terminal svg
 set output '$1.svg'
-set style data lines
+set style data linespoints
 set log y
 plot "
 head -n 1 $infile | \
