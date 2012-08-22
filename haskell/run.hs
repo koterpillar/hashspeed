@@ -65,7 +65,7 @@ countAccum (Node n) =
         incChar k
         countAccum v
     in do
-        (flip mapM) (M.toList n) countNode
+        mapM countNode (M.toList n)
         return ()
 
 count :: Tree -> M.Map Char Int
