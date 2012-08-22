@@ -20,7 +20,7 @@ unsigned int width(void) {
 }
 
 typedef struct _MapItem {
-    char* key;
+    char key;
     void* value;
 } MapItem;
 
@@ -30,18 +30,12 @@ typedef struct _Map {
 } Map;
 
 typedef struct _TreeItem {
-    char* string;
+    char leaf;
     Map* map;
 } TreeItem, *Tree;
 
-int hash(char *str) {
-    unsigned long hash = 5381;
-    int c;
- 
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
- 
-    return hash;
+int hash(char c) {
+    return (int)c;
 }
 
 Map* map_new_sz(int size) {
@@ -54,7 +48,7 @@ Map* map_new() {
     return map_new_sz(16);
 }
 
-void map_insert(Map* map, char* key, void* value);
+void map_insert(Map* map, char key, void* value);
 
 void map_grow(Map* map) {
     Map* new_map = map_new_sz(map->length * 2);
@@ -70,12 +64,12 @@ void map_grow(Map* map) {
     free(new_map);
 }
 
-void map_insert(Map* map, char* key, void* value) {
+void map_insert(Map* map, char key, void* value) {
     int start = hash(key) % map->length;
     int end = start ? start : map->length;
     int i;
     for (i = start; i != end - 1; i = (i + 1) % map->length) {
-        if (map->items[i].key) {
+        if (map->items[i].value) {
             continue;
         }
         map->items[i].key = key;
@@ -86,7 +80,7 @@ void map_insert(Map* map, char* key, void* value) {
     map_insert(map, key, value);
 }
 
-void* map_get(Map* map, char* key) {
+void* map_get(Map* map, char key) {
     if (map->length == 0) {
         return 0;
     } else {
@@ -94,10 +88,7 @@ void* map_get(Map* map, char* key) {
         int end = start ? start : map->length;
         int i;
         for (i = start; i != end - 1; i++) {
-            if (
-                map->items[i].key
-                && !strcmp(key, map->items[i].key)
-            ) {
+            if (key == map->items[i].key && map->items[i].value) {
                 return map->items[i].value;
             }
         }
@@ -110,16 +101,9 @@ void map_free(Map* map) {
     free(map);
 }
 
-char* plain_string(char c) {
-    char* str = malloc(sizeof(char) * 2);
-    str[0] = c;
-    str[1] = '\0';
-    return str;
-}
-
 Tree plain_item(char c) {
     Tree it = malloc(sizeof(TreeItem));
-    it->string = plain_string(c);
+    it->leaf = c;
     it->map = 0;
     return it;
 }
@@ -129,32 +113,31 @@ Tree generate(unsigned int depth) {
         return plain_item(item());
     } else {
         Tree node = malloc(sizeof(TreeItem));
-        node->string = 0;
         node->map = map_new();
 
         unsigned int twidth = width();
         unsigned int i;
         for (i = 0; i < twidth; i++) {
             char c = item();
-            map_insert(node->map, plain_string(c), generate(depth - 1));
+            map_insert(node->map, c, generate(depth - 1));
         }
         return node;
     }
 }
 
-void inc_accum(Map* map, char* key) {
+void inc_accum(Map* map, char key) {
     int* count = map_get(map, key);
     (*count)++;
 }
 
 void count_accum(Tree tree, Map* accum) {
-    if (tree->string) {
-        inc_accum(accum, tree->string);
+    if (!tree->map) {
+        inc_accum(accum, tree->leaf);
     } else {
         int i;
         for (i = 0; i < tree->map->length; i++) {
             MapItem* item = &(tree->map->items[i]);
-            if (!item->key) {
+            if (!item->value) {
                 continue;
             }
             inc_accum(accum, item->key);
@@ -169,15 +152,15 @@ Map* count(Tree tree) {
     for (c = MIN_ITEM; c <= MAX_ITEM; c++) {
         int* i = malloc(sizeof(int));
         *i = 0;
-        map_insert(accum, plain_string(c), i);
+        map_insert(accum, c, i);
     }
     count_accum(tree, accum);
     return accum;
 }
 
 void tree_print_prefix(Tree tree, char* prefix) {
-    if (tree->string) {
-        printf("%s\n", tree->string);
+    if (!tree->map) {
+        printf("%c\n", tree->leaf);
     } else {
         printf("\n");
         char* subprefix = malloc(sizeof(char) * (strlen(prefix) + 2));
@@ -186,10 +169,10 @@ void tree_print_prefix(Tree tree, char* prefix) {
         int i;
         for (i = 0; i < tree->map->length; i++) {
             MapItem* item = &(tree->map->items[i]);
-            if (!item->key) {
+            if (!item->value) {
                 continue;
             }
-            printf("%s%s -> ", prefix, item->key);
+            printf("%s%c -> ", prefix, item->key);
             tree_print_prefix(item->value, subprefix);
         }
         free(subprefix);
@@ -201,16 +184,13 @@ void tree_print(Tree tree) {
 }
 
 void tree_free(Tree tree) {
-    if (tree->string) {
-        free(tree->string);
-    } else {
+    if (tree->map) {
         int i;
         for (i = 0; i < tree->map->length; i++) {
             MapItem* item = &(tree->map->items[i]);
-            if (!item->key) {
+            if (!item->value) {
                 continue;
             }
-            free(item->key);
             tree_free(item->value);
         }
         map_free(tree->map);
@@ -232,8 +212,7 @@ int main(int argc, char** argv) {
         if (!item->key) {
             continue;
         }
-        printf("%s\t%d\n", item->key, *((int*)(item->value)));
-        free(item->key);
+        printf("%c\t%d\n", item->key, *((int*)(item->value)));
         free(item->value);
     }
     map_free(counts);
