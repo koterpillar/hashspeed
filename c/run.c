@@ -42,6 +42,7 @@ Map* map_new_sz(int size) {
     Map* map = malloc(sizeof(Map));
     map->length = size;
     map->items = calloc(sizeof(MapItem), map->length);
+    return map;
 }
 
 Map* map_new() {
@@ -69,15 +70,26 @@ void map_insert(Map* map, char key, void* value) {
     int end = start ? start : map->length;
     int i;
     for (i = start; i != end - 1; i = (i + 1) % map->length) {
-        if (map->items[i].value) {
-            continue;
+        if (key == map->items[i].key || !map->items[i].value) {
+            map->items[i].key = key;
+            map->items[i].value = value;
+            return;
         }
-        map->items[i].key = key;
-        map->items[i].value = value;
-        return;
     }
     map_grow(map);
     map_insert(map, key, value);
+}
+
+void map_delete(Map* map, char key) {
+    int start = hash(key) % map->length;
+    int end = start ? start : map->length;
+    int i;
+    for (i = start; i != end - 1; i = (i + 1) % map->length) {
+        if (key == map->items[i].key) {
+            map->items[i].value = 0;
+            return;
+        }
+    }
 }
 
 void* map_get(Map* map, char key) {
@@ -87,7 +99,7 @@ void* map_get(Map* map, char key) {
         int start = hash(key) % map->length;
         int end = start ? start : map->length;
         int i;
-        for (i = start; i != end - 1; i++) {
+        for (i = start; i != end - 1; i = (i + 1) % map->length) {
             if (key == map->items[i].key && map->items[i].value) {
                 return map->items[i].value;
             }
@@ -108,6 +120,8 @@ Tree plain_item(char c) {
     return it;
 }
 
+void tree_free(Tree tree);
+
 Tree generate(unsigned int depth) {
     if (depth == 0) {
         return plain_item(item());
@@ -119,6 +133,11 @@ Tree generate(unsigned int depth) {
         unsigned int i;
         for (i = 0; i < twidth; i++) {
             char c = item();
+            Tree old = map_get(node->map, c);
+            if (old) {
+                tree_free(old);
+                map_delete(node->map, c);
+            }
             map_insert(node->map, c, generate(depth - 1));
         }
         return node;
