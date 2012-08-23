@@ -2,7 +2,7 @@
 
 infile=$1.txt
 
-echo -n "set terminal svg
+echo -n "set terminal svg background '#ffffff'
 set output '$1.svg'
 set style data linespoints
 set key left top
