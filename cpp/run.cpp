@@ -13,18 +13,16 @@ using std::string;
 struct TreeItem;
 typedef TreeItem* Tree;
 struct TreeItem {
-    virtual void delete_all(void) = 0;
+    virtual ~TreeItem() {}
 };
 struct TreeLeaf: public TreeItem {
     char value;
     TreeLeaf(char c): value(c) {}
-    virtual void delete_all(void) {}
 };
 struct TreeNode: public TreeItem {
     map<char, Tree> value;
-    virtual void delete_all(void) {
+    virtual ~TreeNode() {
         for(auto it = value.begin(); it != value.end(); it++) {
-            it->second->delete_all();
             delete it->second;
         }
     }
@@ -53,7 +51,10 @@ Tree generate(unsigned int depth) {
         TreeNode* node = new TreeNode();
         unsigned int twidth = width();
         for (unsigned int i = 0; i < twidth; i++) {
-            auto it = item();
+            char it = item();
+            if (node->value[it]) {
+                delete node->value[it];
+            }
             node->value[it] = generate(depth - 1);
         }
         return node;
@@ -98,6 +99,7 @@ void print(Tree tree, string prefix = "") {
 
 int main(int argc, char** argv) {
     unsigned int depth = atoi(argv[1]);
+
     Tree tree = generate(depth);
 
     if (depth < 4)
@@ -109,7 +111,6 @@ int main(int argc, char** argv) {
     }
     delete counts;
 
-    tree->delete_all();
     delete tree;
     
     return 0;
